@@ -14,7 +14,12 @@ class ClientController extends Controller
      */
     public function index()
     {
-        $clients= Client::paginate(10);
+        $clients = Client::paginate(10);
+
+        // Return JSON for API requests
+        if (request()->expectsJson() || request()->is('api/*')) {
+            return response()->json($clients);
+        }
 
         return view('clients.index', compact('clients'));
     }
@@ -25,7 +30,6 @@ class ClientController extends Controller
     public function create()
     {
         return view('clients.create');
-
     }
 
     /**
@@ -33,18 +37,35 @@ class ClientController extends Controller
      */
     public function store(StoreClientRequest $request)
     {
-        Client::create($request->validated());
+        $client = Client::create($request->validated());
+
+        // Return JSON for API requests
+        if (request()->expectsJson() || request()->is('api/*')) {
+            return response()->json($client, 201);
+        }
 
         return redirect()->route('clients.index');
     }
-    
+
+    /**
+     * Display the specified resource.
+     */
+    public function show(Client $client)
+    {
+        // Return JSON for API requests
+        if (request()->expectsJson() || request()->is('api/*')) {
+            return response()->json($client);
+        }
+
+        return view('clients.show', compact('client'));
+    }
+
     /**
      * Show the form for editing the specified resource.
      */
     public function edit(Client $client)
     {
         return view('clients.edit', compact('client'));
-
     }
 
     /**
@@ -54,8 +75,12 @@ class ClientController extends Controller
     {
         $client->update($request->validated());
 
-        return redirect()->route('clients.index');
+        // Return JSON for API requests
+        if (request()->expectsJson() || request()->is('api/*')) {
+            return response()->json($client);
+        }
 
+        return redirect()->route('clients.index');
     }
 
     /**
@@ -65,6 +90,11 @@ class ClientController extends Controller
     {
         $client->delete();
 
+        // Return JSON for API requests
+        if (request()->expectsJson() || request()->is('api/*')) {
+            return response()->json(null, 204);
+        }
+
         return redirect()->route('clients.index');
-    } 
+    }
 }

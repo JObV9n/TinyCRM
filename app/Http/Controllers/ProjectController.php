@@ -14,18 +14,20 @@ class ProjectController extends Controller
      */
     public function index()
     {
-        // $projects = Project::orderBy('updated_at', 'desc')->with(['user', 'client'])->paginate(10);
+        $projects = Project::orderBy('updated_at', 'desc')->with(['user', 'client'])->paginate(10);
 
-        // return view('projects.index', compact('projects'));
+        // Return JSON for API requests
+        if (request()->expectsJson() || request()->is('api/*')) {
+            return response()->json($projects);
+        }
 
-            $projects = Project::orderBy('updated_at', 'desc')->with(['user', 'client'])->paginate(10);
-            $users = User::all();
-            $clients = Client::all();
-            $statuses = \App\Enums\ProjectStatus::cases();
-        
-            // For a single project (for example, the first one)
-            $project = $projects->first();
-            return view('projects.index', compact('projects', 'project', 'users', 'clients', 'statuses'));
+        $users = User::all();
+        $clients = Client::all();
+        $statuses = \App\Enums\ProjectStatus::cases();
+    
+        // For a single project (for example, the first one)
+        $project = $projects->first();
+        return view('projects.index', compact('projects', 'project', 'users', 'clients', 'statuses'));
     }
 
     /**
@@ -44,7 +46,13 @@ class ProjectController extends Controller
      */
     public function store(StoreProjectRequest $request)
     {
-        Project::create($request->validated());
+        $project = Project::create($request->validated());
+        $project->load(['user', 'client']);
+
+        // Return JSON for API requests
+        if (request()->expectsJson() || request()->is('api/*')) {
+            return response()->json($project, 201);
+        }
 
         return redirect()->route('projects.index');
     }
@@ -69,10 +77,13 @@ class ProjectController extends Controller
      */
     public function update(UpdateProjectRequest $request, Project $project)
     {
-
-        // dd($request->validated());
-        // dd($project);
         $project->update($request->validated());
+        $project->load(['user', 'client']);
+
+        // Return JSON for API requests
+        if (request()->expectsJson() || request()->is('api/*')) {
+            return response()->json($project);
+        }
 
         return redirect()->route('projects.index');
     }
@@ -83,6 +94,12 @@ class ProjectController extends Controller
     public function destroy(Project $project)
     {
         $project->delete();
+
+        // Return JSON for API requests
+        if (request()->expectsJson() || request()->is('api/*')) {
+            return response()->json(null, 204);
+        }
+
         return redirect()->route('projects.index');
     }
 }

@@ -12,8 +12,12 @@ class UserController extends Controller
      */
     public function index()
     {
-        // echo "User Controller Index";
-        $users = User::orderBy('updated_at', 'desc')->paginate(10);
+        $users = User::orderBy('updated_at', 'desc')->with('roles')->paginate(10);
+
+        // Return JSON for API requests
+        if (request()->expectsJson() || request()->is('api/*')) {
+            return response()->json($users);
+        }
 
         return view('users.index', compact('users'));
     }
@@ -32,7 +36,13 @@ class UserController extends Controller
      */
     public function store(StoreUserRequest $request)
     {
-        User::create($request->validated());
+        $user = User::create($request->validated());
+        $user->load('roles');
+
+        // Return JSON for API requests
+        if (request()->expectsJson() || request()->is('api/*')) {
+            return response()->json($user, 201);
+        }
 
         return redirect()->route('users.index', ["message" => "New User is added"]);
     }
@@ -42,7 +52,14 @@ class UserController extends Controller
      */
     public function show(User $user)
     {
-        //
+        $user->load('roles');
+        
+        // Return JSON for API requests
+        if (request()->expectsJson() || request()->is('api/*')) {
+            return response()->json($user);
+        }
+
+        return view('users.show', compact('user'));
     }
 
     /**
@@ -60,9 +77,14 @@ class UserController extends Controller
     public function update(UpdateUserRequest $request, User $user)
     {
         $user->update($request->validated());
+        $user->load('roles');
+
+        // Return JSON for API requests
+        if (request()->expectsJson() || request()->is('api/*')) {
+            return response()->json($user);
+        }
 
         return redirect()->route('users.index', ["message" => $user->first_name . "data is updated"]);
-
     }
 
     /**
@@ -70,11 +92,13 @@ class UserController extends Controller
      */
     public function destroy(User $user)
     {
-        // echo "User to be deleted";
-        // dd($user);
         $user->delete();
 
-        return redirect()->route('users.index');
+        // Return JSON for API requests
+        if (request()->expectsJson() || request()->is('api/*')) {
+            return response()->json(null, 204);
+        }
 
+        return redirect()->route('users.index');
     }
 }

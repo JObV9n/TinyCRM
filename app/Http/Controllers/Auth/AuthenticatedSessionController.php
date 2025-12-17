@@ -14,19 +14,26 @@ class AuthenticatedSessionController extends Controller
     /**
      * Display the login view.
      */
-    public function create(): View
+    public function create()
     {
-        return view('auth.login');
+        if (request()->expectsJson() || request()->is('api/*')) {
+            return response()->json(['message' => 'Login page'], 200);
+        }
+        return view('app');
     }
 
     /**
      * Handle an incoming authentication request.
      */
-    public function store(LoginRequest $request): RedirectResponse
+    public function store(LoginRequest $request)
     {
         $request->authenticate();
 
         $request->session()->regenerate();
+
+        if (request()->expectsJson() || request()->is('api/*')) {
+            return response()->json(['message' => 'Logged in successfully'], 200);
+        }
 
         return redirect()->intended(route('dashboard', absolute: false));
     }
@@ -34,13 +41,17 @@ class AuthenticatedSessionController extends Controller
     /**
      * Destroy an authenticated session.
      */
-    public function destroy(Request $request): RedirectResponse
+    public function destroy(Request $request)
     {
         Auth::guard('web')->logout();
 
         $request->session()->invalidate();
 
         $request->session()->regenerateToken();
+
+        if (request()->expectsJson() || request()->is('api/*')) {
+            return response()->json(['message' => 'Logged out successfully'], 200);
+        }
 
         return redirect('/');
     }

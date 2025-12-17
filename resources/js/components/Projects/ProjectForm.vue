@@ -1,4 +1,3 @@
-<!-- filepath: c:\Users\Lenovo\Desktop\miso\projects\php_projects\minicrm\resources\js\components\Projects\ProjectForm.vue -->
 <template>
     <div>
         <h2 class="font-semibold text-xl text-gray-800 leading-tight">Project</h2>

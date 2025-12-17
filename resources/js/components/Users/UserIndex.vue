@@ -1,4 +1,3 @@
-<!-- filepath: c:\Users\Lenovo\Desktop\miso\projects\php_projects\minicrm\resources\js\components\UserIndex.vue -->
 <template>
     <div>
         <h2 class="font-semibold text-xl text-gray-800 leading-tight">User</h2>

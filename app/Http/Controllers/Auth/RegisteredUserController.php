@@ -17,9 +17,12 @@ class RegisteredUserController extends Controller
     /**
      * Display the registration view.
      */
-    public function create(): View
+    public function create()
     {
-        return view('auth.register');
+        if (request()->expectsJson() || request()->is('api/*')) {
+            return response()->json(['message' => 'Register page'], 200);
+        }
+        return view('app');
     }
 
     /**
@@ -27,7 +30,7 @@ class RegisteredUserController extends Controller
      *
      * @throws \Illuminate\Validation\ValidationException
      */
-    public function store(Request $request): RedirectResponse
+    public function store(Request $request)
     {
         $request->validate([
             'first_name' => ['required', 'string', 'max:255'],
@@ -46,6 +49,10 @@ class RegisteredUserController extends Controller
         event(new Registered($user));
 
         Auth::login($user);
+
+        if (request()->expectsJson() || request()->is('api/*')) {
+            return response()->json(['message' => 'Registration successful', 'user' => $user], 201);
+        }
 
         return redirect(route('dashboard', absolute: false));
     }

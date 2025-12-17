@@ -1,4 +1,3 @@
-<!-- filepath: c:\Users\Lenovo\Desktop\miso\projects\php_projects\minicrm\resources\js\components\UserCreate.vue -->
 <template>
     <div>
         <h2 class="font-semibold text-xl text-gray-800 leading-tight">Create User</h2>

@@ -13,7 +13,8 @@ class ClientPolicy
      */
     public function viewAny(User $user): bool
     {
-        //
+        // All authenticated users can view clients
+        return true;
     }
 
     /**
@@ -21,7 +22,8 @@ class ClientPolicy
      */
     public function view(User $user, Client $client): bool
     {
-        //
+        // All authenticated users can view a client
+        return true;
     }
 
     /**
@@ -29,7 +31,8 @@ class ClientPolicy
      */
     public function create(User $user): bool
     {
-        //
+        // All authenticated users can create clients
+        return true;
     }
 
     /**
@@ -37,7 +40,8 @@ class ClientPolicy
      */
     public function update(User $user, Client $client): bool
     {
-        //
+        // All authenticated users can update clients
+        return true;
     }
 
     /**
@@ -45,7 +49,8 @@ class ClientPolicy
      */
     public function delete(User $user, Client $client): bool
     {
-        //
+        // Only admins can delete clients
+        return $user->hasRole('admin');
     }
 
     /**
@@ -53,7 +58,8 @@ class ClientPolicy
      */
     public function restore(User $user, Client $client): bool
     {
-        //
+        // Only admins can restore clients
+        return $user->hasRole('admin');
     }
 
     /**
@@ -61,6 +67,7 @@ class ClientPolicy
      */
     public function forceDelete(User $user, Client $client): bool
     {
-        //
+        // Only admins can force delete clients
+        return $user->hasRole('admin');
     }
 }

@@ -13,7 +13,8 @@ class TaskPolicy
      */
     public function viewAny(User $user): bool
     {
-        //
+        // All authenticated users can view tasks list
+        return true;
     }
 
     /**
@@ -21,7 +22,8 @@ class TaskPolicy
      */
     public function view(User $user, Task $task): bool
     {
-        //
+        // Users can view their own tasks, admins can view all
+        return $user->id === $task->user_id || $user->hasRole('admin');
     }
 
     /**
@@ -29,7 +31,8 @@ class TaskPolicy
      */
     public function create(User $user): bool
     {
-        //
+        // All authenticated users can create tasks
+        return true;
     }
 
     /**
@@ -37,7 +40,8 @@ class TaskPolicy
      */
     public function update(User $user, Task $task): bool
     {
-        //
+        // Users can update their own tasks, admins can update all
+        return $user->id === $task->user_id || $user->hasRole('admin');
     }
 
     /**
@@ -45,7 +49,8 @@ class TaskPolicy
      */
     public function delete(User $user, Task $task): bool
     {
-        //
+        // Users can delete their own tasks, admins can delete all
+        return $user->id === $task->user_id || $user->hasRole('admin');
     }
 
     /**
@@ -53,7 +58,8 @@ class TaskPolicy
      */
     public function restore(User $user, Task $task): bool
     {
-        //
+        // Users can restore their own tasks, admins can restore all
+        return $user->id === $task->user_id || $user->hasRole('admin');
     }
 
     /**
@@ -61,6 +67,7 @@ class TaskPolicy
      */
     public function forceDelete(User $user, Task $task): bool
     {
-        //
+        // Only admins can force delete tasks
+        return $user->hasRole('admin');
     }
 }

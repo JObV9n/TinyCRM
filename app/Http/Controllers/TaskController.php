@@ -16,7 +16,11 @@ class TaskController extends Controller
     public function index()
     {
         $tasks = Task::orderBy('updated_at', 'desc')->with(['user', 'client', 'project'])->paginate(10);
-        // $users = User::orderBy('updated_at','desc')->paginate(10);
+
+        // Return JSON for API requests
+        if (request()->expectsJson() || request()->is('api/*')) {
+            return response()->json($tasks);
+        }
 
         return view('tasks.index', compact('tasks'));
     }
@@ -38,7 +42,14 @@ class TaskController extends Controller
      */
     public function store(StoreTaskRequest $request)
     {
-        Task::create($request->validated());
+        $task = Task::create($request->validated());
+        $task->load(['user', 'client', 'project']);
+
+        // Return JSON for API requests
+        if (request()->expectsJson() || request()->is('api/*')) {
+            return response()->json($task, 201);
+        }
+
         return redirect()->route('tasks.index');
     }
 
@@ -75,6 +86,12 @@ class TaskController extends Controller
     public function update(UpdateTaskRequest $request, Task $task)
     {
         $task->update($request->validated());
+        $task->load(['user', 'client', 'project']);
+
+        // Return JSON for API requests
+        if (request()->expectsJson() || request()->is('api/*')) {
+            return response()->json($task);
+        }
 
         return redirect()->route('tasks.index');
     }
@@ -85,6 +102,12 @@ class TaskController extends Controller
     public function destroy(Task $task)
     {
         $task->delete();
+
+        // Return JSON for API requests
+        if (request()->expectsJson() || request()->is('api/*')) {
+            return response()->json(null, 204);
+        }
+
         return redirect()->route('tasks.index');
     }
 }

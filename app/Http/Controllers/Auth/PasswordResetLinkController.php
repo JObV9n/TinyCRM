@@ -13,9 +13,12 @@ class PasswordResetLinkController extends Controller
     /**
      * Display the password reset link request view.
      */
-    public function create(): View
+    public function create()
     {
-        return view('auth.forgot-password');
+        if (request()->expectsJson() || request()->is('api/*')) {
+            return response()->json(['message' => 'Forgot password page'], 200);
+        }
+        return view('app');
     }
 
     /**
@@ -23,18 +26,21 @@ class PasswordResetLinkController extends Controller
      *
      * @throws \Illuminate\Validation\ValidationException
      */
-    public function store(Request $request): RedirectResponse
+    public function store(Request $request)
     {
         $request->validate([
             'email' => ['required', 'email'],
         ]);
 
-        // We will send the password reset link to this user. Once we have attempted
-        // to send the link, we will examine the response then see the message we
-        // need to show to the user. Finally, we'll send out a proper response.
         $status = Password::sendResetLink(
             $request->only('email')
         );
+
+        if (request()->expectsJson() || request()->is('api/*')) {
+            return $status == Password::RESET_LINK_SENT
+                ? response()->json(['status' => __($status)], 200)
+                : response()->json(['errors' => ['email' => [__($status)]]], 422);
+        }
 
         return $status == Password::RESET_LINK_SENT
                     ? back()->with('status', __($status))

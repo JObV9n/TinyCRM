@@ -1,4 +1,7 @@
-import axios from 'axios';
-window.axios = axios;
+// CSRF token helper
+function getCsrfToken() {
+    return document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || '';
+}
 
-window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
+// Make CSRF token globally available
+window.getCsrfToken = getCsrfToken;

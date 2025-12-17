@@ -1,4 +1,3 @@
-<!-- filepath: c:\Users\Lenovo\Desktop\miso\projects\php_projects\minicrm\resources\js\components\TableComponent.vue -->
 <template>
     <div>
         <table class="w-full text-sm text-left text-gray-500 border border-slate-400 table-auto mt-4">
@@ -45,5 +44,4 @@ export default {
 </script>
 
 <style scoped>
-/* Add any specific styles for the TableComponent here */
 </style>
