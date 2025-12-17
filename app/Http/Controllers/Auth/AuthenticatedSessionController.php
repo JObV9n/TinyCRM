@@ -31,11 +31,10 @@ class AuthenticatedSessionController extends Controller
 
         $request->session()->regenerate();
 
-        if (request()->expectsJson() || request()->is('api/*')) {
-            return response()->json(['message' => 'Logged in successfully'], 200);
-        }
-
-        return redirect()->intended(route('dashboard', absolute: false));
+        return response()->json([
+            'message' => 'Logged in successfully',
+            'user' => $request->user()->load('roles')
+        ], 200);
     }
 
     /**

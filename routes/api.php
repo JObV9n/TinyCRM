@@ -15,10 +15,13 @@ Route::middleware(['auth:sanctum'])->get('/user', function (Request $request) {
 
 // All API routes require authentication
 Route::middleware(['auth:sanctum'])->group(function () {
-    // Users - Admin only
+    // Users - Admin only for full CRUD
     Route::middleware(['role:admin'])->group(function () {
         Route::apiResource('users', UserController::class);
     });
+
+    // Allow all authenticated users to fetch users list for assignments
+    Route::get('/users-list', [UserController::class, 'index'])->name('users.list');
 
     // Clients
     Route::apiResource('clients', ClientController::class);

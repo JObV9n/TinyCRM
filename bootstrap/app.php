@@ -12,7 +12,9 @@ return Application::configure(basePath: dirname(__DIR__))
         commands: __DIR__ . '/../routes/console.php',
         health: '/up',
         then: function () {
-            Route::group([], base_path('vendor/laravel/sanctum/routes/sanctum.php'));
+            Route::get('/sanctum/csrf-cookie', [\Laravel\Sanctum\Http\Controllers\CsrfCookieController::class, 'show'])
+                ->middleware('web')
+                ->name('sanctum.csrf-cookie');
         }
     )
     ->withMiddleware(function (Middleware $middleware): void {
@@ -23,7 +25,6 @@ return Application::configure(basePath: dirname(__DIR__))
             'role_or_permission' => \Spatie\Permission\Middleware\RoleOrPermissionMiddleware::class,
         ]);
         
-        // Enable stateful API authentication for SPA
         $middleware->statefulApi();
     })
     ->withExceptions(function (Exceptions $exceptions): void {

@@ -50,15 +50,8 @@ class NewPasswordController extends Controller
             }
         );
 
-        if (request()->expectsJson() || request()->is('api/*')) {
-            return $status == Password::PASSWORD_RESET
-                ? response()->json(['status' => __($status)], 200)
-                : response()->json(['errors' => ['email' => [__($status)]]], 422);
-        }
-
-         return $status == Password::PASSWORD_RESET
-                    ? redirect()->route('login')->with('status', __($status))
-                    : back()->withInput($request->only('email'))
-                        ->withErrors(['email' => __($status)]);
+        return $status == Password::PASSWORD_RESET
+            ? response()->json(['status' => __($status), 'message' => 'Password reset successfully'], 200)
+            : response()->json(['errors' => ['email' => [__($status)]]], 422);
     }
 }

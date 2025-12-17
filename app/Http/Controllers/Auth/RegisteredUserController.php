@@ -50,10 +50,12 @@ class RegisteredUserController extends Controller
 
         Auth::login($user);
 
+        $request->session()->regenerate();
+
         if (request()->expectsJson() || request()->is('api/*')) {
-            return response()->json(['message' => 'Registration successful', 'user' => $user], 201);
+            return response()->json(['message' => 'Registration successful', 'user' => $user->load('roles')], 201);
         }
 
-        return redirect(route('dashboard', absolute: false));
+        return response()->json(['message' => 'Registration successful', 'user' => $user->load('roles')], 201);
     }
 }
