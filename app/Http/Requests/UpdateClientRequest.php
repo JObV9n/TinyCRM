@@ -25,10 +25,10 @@ class UpdateClientRequest extends FormRequest
         return [
             'client_name' => ['','string','max:155'],
             'client_email' => ['','string','email','max:255',Rule::unique('clients')->ignore($this->client)],
-            'client_phone' => 'integer|max:13|min:10',
+            'client_phone' => 'string|min:10|max:15',
             'client_address' => 'string|max:55',
             'client_city' => 'string|max:55',
-            'client_zipcode' => 'string|max:16',
+            'client_zipcode' => 'string|min:5|max:10',
         ];
     }
 }

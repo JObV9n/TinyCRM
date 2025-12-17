@@ -25,10 +25,10 @@ class StoreClientRequest extends FormRequest
         return [
             'client_name' => 'required|string|max:155',
             'client_email' => ['required',Rule::unique('clients','client_email')], //unique email in clients table
-            'client_phone' => 'required|integer|max:13|min:10',
+            'client_phone' => 'required|string|min:10|max:15',
             'client_address' => 'required|string|max:55',
             'client_city' => 'required|string|max:55',
-            'client_zipcode' => 'required|integer|max:6',
+            'client_zipcode' => 'required|string|min:5|max:10',
         ];
     }
 }
